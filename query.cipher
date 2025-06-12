@@ -1,0 +1,72 @@
+// === Orgs ===
+MERGE (orgA:Org {id: 'org-1', title: 'Acme Corp'})
+MERGE (orgB:Org {id: 'org-2', title: 'Beta Inc'})
+
+// === Users ===
+MERGE (alice:User {username: 'alice'})
+MERGE (bob:User {username: 'bob'})
+MERGE (eve:User {username: 'eve'})         // NHI / bot
+
+// === Roles ===
+MERGE (admin:Role {name: 'admin'})
+MERGE (dev:Role {name: 'developer'})
+
+// === Tokens ===
+// Shared token
+MERGE (tokenShared:Token {value: 'tok-shared-001'})
+
+// Reused in multiple orgs
+MERGE (tokenMultiOrg:Token {value: 'tok-cross-org-002'})
+
+// Overly broad permissions
+MERGE (tokenOverPerm:Token {value: 'tok-full-access-003'})
+
+// Compromised token
+MERGE (tokenCompromised:Token {value: 'tok-leaked-004', status: 'compromised'})
+
+// === Relationships ===
+
+// Token 1: Shared token used by 2 users
+MERGE (tokenShared)-[:USED_BY]->(alice)
+MERGE (tokenShared)-[:USED_BY]->(bob)
+MERGE (tokenShared)-[:BELONGS_TO]->(orgA)
+
+// Token 2: Same token in two orgs (bad practice)
+MERGE (tokenMultiOrg)-[:USED_BY]->(bob)
+MERGE (tokenMultiOrg)-[:BELONGS_TO]->(orgA)
+MERGE (tokenMultiOrg)-[:BELONGS_TO]->(orgB)
+
+// Token 3: Over-permissive
+MERGE (tokenOverPerm)-[:USED_BY]->(eve)
+MERGE (tokenOverPerm)-[:BELONGS_TO]->(orgB)
+
+// Token 4: Leaked
+MERGE (tokenCompromised)-[:USED_BY]->(alice)
+MERGE (tokenCompromised)-[:BELONGS_TO]->(orgA)
+
+// === Roles Assignment ===
+MERGE (alice)-[:HAS_ROLE]->(admin)
+MERGE (bob)-[:HAS_ROLE]->(dev)
+MERGE (eve)-[:HAS_ROLE]->(dev)
+
+// === Permissions ===
+MERGE (permRead:Permission {name: 'Read'})
+MERGE (permWrite:Permission {name: 'Write'})
+MERGE (permFull:Permission {name: 'Read & Write'})
+
+// === Endpoints ===
+MERGE (ep1:Endpoint {path: '/v1/models'})
+MERGE (ep2:Endpoint {path: '/v1/chat/completions'})
+MERGE (ep3:Endpoint {path: '/v1/audio'})
+MERGE (ep4:Endpoint {path: '/v1/files'})
+
+// Token 3: Full access (used to simulate over-permission)
+MERGE (tokenOverPerm)-[:GRANTS]->(permFull)
+MERGE (permFull)-[:APPLIES_TO]->(ep1)
+MERGE (permFull)-[:APPLIES_TO]->(ep2)
+MERGE (permFull)-[:APPLIES_TO]->(ep3)
+MERGE (permFull)-[:APPLIES_TO]->(ep4)
+
+// Token 4: Limited, but leaked
+MERGE (tokenCompromised)-[:GRANTS]->(permRead)
+MERGE (permRead)-[:APPLIES_TO]->(ep1)
