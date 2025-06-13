@@ -1,0 +1,1 @@
+docker run --restart always -d  --publish=7474:7474 --publish=7687:7687  --env  NEO4J_AUTH=neo4j/nikhil1234  -volume=neo4j_data:/data   neo4j

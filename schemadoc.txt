@@ -1,0 +1,28 @@
+--Current permissions
+
+:HAS_USER	Org	→ User	An organization has a user
+:HAS_ROLE	User	→ Role	A user has a specific role (e.g., reader, admin)
+:BELONGS_TO	Token	→ Org	A token belongs to an organization
+:USED_BY	Token	→ User	A token is used by a user (could be NHI or human) // not sure
+:GRANTS	Token	→ Permission	A token grants a certain permission
+:APPLIES_TO	Permission	→ Endpoint	A permission applies to one or more API endpoints
+
+Further
+:ISSUED_TO	Token	→ User	Who originally created the token
+:USED_IN	Token	→ Platform	Where this token has been seen in use (e.g., GitHub, AWS)
+:EXPOSED_IN	Token	→ Leak or Repo/File	Where a token was leaked (e.g., file, repo, timestamp)
+:LINKED_TO	User	→ NHI (bot identity)	If a human user also owns a bot or NHI
+:PART_OF	Endpoint	→ Scope	Group endpoints into scopes (optional for permission modeling)
+:RELATED_TO	Token	→ Token	Used for detecting duplication/cloning/shared tokens
+--------------------------------------------------------------------------------------------------------
+
+Nodes:
+Token, User, Org, Role, Permission, Endpoint
+
+Not implemented yet:
+NHI (Non-Human Identity)
+Platform (e.g., GitHub, AWS, OpenAI)
+Leak, File, Repo
+Scope (optional grouping for permissions)
+
+---------------------------------------------------------------------------------------------------------------

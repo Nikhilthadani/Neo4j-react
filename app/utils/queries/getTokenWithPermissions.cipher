@@ -1,0 +1,3 @@
+MATCH (t:Token)-[:GRANTS]->(p:Permission)-[:APPLIES_TO]->(e:Endpoint)
+RETURN t.value AS Token, p.name AS Permission, e.path AS Endpoint
+ORDER BY Token;
