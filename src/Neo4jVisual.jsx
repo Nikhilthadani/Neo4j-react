@@ -1,11 +1,6 @@
-import { BasicNvlWrapper, InteractiveNvlWrapper } from "@neo4j-nvl/react";
+import { InteractiveNvlWrapper } from "@neo4j-nvl/react";
 import { useEffect, useRef, useState } from "react";
-import { FaUser, FaUserAlt } from "react-icons/fa";
-import {
-  nvlResultTransformer,
-  type Node,
-  type Relationship,
-} from "@neo4j-nvl/base";
+import { nvlResultTransformer } from "@neo4j-nvl/base";
 import driver from "./utils/neo4j";
 
 /** 
@@ -160,7 +155,7 @@ const colorPalette = [
 const labelColorMap = new Map();
 let colorIndex = 0;
 
-export const getUniqueColorForLabel = (label: string) => {
+export const getUniqueColorForLabel = (label) => {
   if (!labelColorMap.has(label)) {
     const color = colorPalette[colorIndex % colorPalette.length];
     labelColorMap.set(label, color);
@@ -168,7 +163,7 @@ export const getUniqueColorForLabel = (label: string) => {
   }
   return labelColorMap.get(label);
 };
-const fetchD = async (query: string, params: {}) => {
+const fetchD = async (query, params) => {
   const data = await driver.executeQuery(query, params, {
     resultTransformer: nvlResultTransformer,
   });
@@ -187,7 +182,7 @@ OPTIONAL MATCH (t)-[r1:EXPOSED_BY]->(u:User)-[r2:BELONGS_TO]->(o:Organization)
 OPTIONAL MATCH (t)-[r3:HAS_ENDPOINT]->(e:Endpoint)
 OPTIONAL MATCH (t)-[r4:HAS_PERMISSION]->(p:Permission)
 RETURN t, u, o, e, p, r1, r2, r3, r4`;
-const getUrl = (prop: any) => {
+const getUrl = (prop) => {
   // value:token
   // permissions"name
   const URLS = {
@@ -219,10 +214,10 @@ export default function Neo4jVisual() {
   const nvlRef = useRef(null);
   const [nodes, setNodes] = useState();
   const [rels, setRels] = useState([]);
-  const fetchAndFormat = async (query: string, params: any) => {
+  const fetchAndFormat = async (query, params) => {
     await fetchD(getVisual, params)
       .then((d) => {
-        const styledNodes = d.nodes.map((node: Node) => {
+        const styledNodes = d.nodes.map((node) => {
           const ogNode = d.recordObjectMap.get(node.id);
 
           return {
@@ -248,7 +243,7 @@ export default function Neo4jVisual() {
           };
         });
 
-        const stylesRels = d.relationships.map((rel: Relationship) => {
+        const stylesRels = d.relationships.map((rel) => {
           const ogRel = d.recordObjectMap.get(rel.id);
           console.log(ogRel);
 
