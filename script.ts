@@ -11,8 +11,8 @@ const client = new Pool({
 });
 // ✅ Neo4j Config
 const driver = neo4j.driver(
-  "bolt://localhost:7687",
-  neo4j.auth.basic("neo4j", "nikhil1234")
+  "neo4j+s://066a28ac.databases.neo4j.io",
+  neo4j.auth.basic("neo4j", "Hy--rVZxL4sEsHDHy9JvhgrGbXTGPhYi-6lRcAsfIUs")
 );
 const CYPHER = `WITH $row AS row
 
